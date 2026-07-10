@@ -220,8 +220,10 @@
   .cal-day .d{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
   .cal-day.out{background:var(--paper-2);border-color:transparent}
   .cal-day.out .d{opacity:.35}
+  .cal-day.day{cursor:pointer}
+  .cal-day.day:hover{border-color:var(--surgical);background:#F3F8F5}
   .cal-day.today{border-color:var(--surgical);border-width:1.5px}
-  .cal-day.has{cursor:pointer;background:#EAF4EF;border-color:var(--surgical)}
+  .cal-day.has{background:#EAF4EF;border-color:var(--surgical)}
   .cal-day.has:hover{background:#DCEDE5}
   .cal-day .cash{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--surgical-deep);line-height:1.05;text-align:center}
   .cal-day .cnt{position:absolute;top:2px;right:4px;font-family:var(--mono);font-size:8px;color:var(--surgical);font-weight:700}
@@ -581,13 +583,13 @@ function renderCalendar(){
   }
   for(let day=1; day<=daysInMonth; day++){
     const cell=document.createElement("div");
-    cell.className="cal-day";
+    cell.className="cal-day day";
+    cell.dataset.day = day;
     const isToday = calYear===now.getFullYear() && calMonth===now.getMonth() && day===now.getDate();
     if(isToday) cell.classList.add("today");
     const e = byDay.get(day);
     if(e){
       cell.classList.add("has");
-      cell.dataset.day = day;
       cell.innerHTML = `<span class="cnt">${e.itens.length}</span><span class="d">${day}</span><span class="cash">${BRL(e.total)}</span>`;
     }else{
       cell.innerHTML = `<span class="d">${day}</span>`;
@@ -737,9 +739,9 @@ document.addEventListener("click",e=>{
     delDoc(b.dataset.del==="contrib"?"contribuicoes":"despesas", b.dataset.id).then(()=>toast("Removido."));
   }
 });
-// clique num dia do calendário
+// clique num dia do calendário (qualquer dia do mês)
 document.addEventListener("click",e=>{
-  const cell=e.target.closest(".cal-day.has");
+  const cell=e.target.closest(".cal-day.day");
   if(cell && cell.dataset.day && !e.target.closest("[data-edit],[data-del]")){
     openDay(+cell.dataset.day);
   }
